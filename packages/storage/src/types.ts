@@ -9,10 +9,12 @@ export interface Row {
 }
 
 export interface OutboxEntry {
-  /** Client-generated UUID; makes the server write idempotent. */
+  /** Client-generated UUID for the change. */
   id: string;
   table: string;
-  op: 'upsert' | 'delete';
+  /** Id of the changed row; inserts use client-generated ids, so replays are idempotent. */
+  rowId: string;
+  op: 'insert' | 'update';
   payload: Record<string, unknown>;
   createdAt: string;
 }
@@ -29,4 +31,7 @@ export interface LocalStore {
 
   getMeta(key: string): Promise<string | undefined>;
   setMeta(key: string, value: string): Promise<void>;
+
+  /** Removes everything, e.g. on sign-out. */
+  clear(): Promise<void>;
 }

@@ -9,18 +9,48 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    text: '#0F172A',
+    background: '#F8F9FC',
+    /** Cards and sheets that sit on the background. */
+    card: '#FFFFFF',
+    cardBorder: '#EEF1F6',
+    /** Inputs, tracks and other recessed surfaces. */
+    backgroundElement: '#F1F4F9',
+    backgroundSelected: '#E2E8F0',
+    textSecondary: '#64748B',
+    textMuted: '#94A3B8',
+    border: '#E2E8F0',
+    primary: '#4F46E5',
+    primarySoft: '#EEF2FF',
+    onPrimary: '#FFFFFF',
+    link: '#4F46E5',
+    danger: '#DC2626',
+    dangerSoft: '#FEF2F2',
+    success: '#059669',
+    successSoft: '#ECFDF5',
+    warning: '#D97706',
+    shadow: '#0F172A',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    text: '#F8FAFC',
+    background: '#0B0E17',
+    card: '#151A26',
+    cardBorder: '#1F2636',
+    backgroundElement: '#1C2230',
+    backgroundSelected: '#2A3244',
+    textSecondary: '#94A3B8',
+    textMuted: '#64748B',
+    border: '#2A3244',
+    primary: '#4F46E5',
+    primarySoft: '#1E1B4B',
+    onPrimary: '#FFFFFF',
+    link: '#A5B4FC',
+    danger: '#F87171',
+    dangerSoft: '#2A1215',
+    success: '#34D399',
+    successSoft: '#052E22',
+    warning: '#FBBF24',
+    shadow: '#000000',
   },
 } as const;
 
@@ -61,5 +91,11 @@ export const Spacing = {
   six: 64,
 } as const;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
+export const Radius = {
+  control: 12,
+  card: 16,
+  hero: 22,
+  pill: 999,
+} as const;
+
 export const MaxContentWidth = 800;

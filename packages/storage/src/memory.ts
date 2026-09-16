@@ -39,5 +39,10 @@ export function createMemoryStore(): LocalStore {
     async setMeta(key, value) {
       meta.set(key, value);
     },
+    async clear() {
+      tables.clear();
+      outbox = [];
+      meta.clear();
+    },
   };
 }

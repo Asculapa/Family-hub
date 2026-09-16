@@ -1,16 +1,10 @@
-import type { SFSymbol } from 'sf-symbols-typescript';
+import { Icons } from '@/components/ui/icon';
 
-/** Bottom tab bar (FR-9.2). */
+/** Bottom tab bar (FR-9.2). Only Home switches to a filled icon, as in the design. */
 export const TABS = [
-  { name: 'index', href: '/', label: 'home', sf: 'house', md: 'home' },
-  { name: 'lists', href: '/lists', label: 'lists', sf: 'checklist', md: 'checklist' },
-  { name: 'calendar', href: '/calendar', label: 'calendar', sf: 'calendar', md: 'calendar_month' },
-  { name: 'map', href: '/map', label: 'map', sf: 'map', md: 'map' },
-  { name: 'family', href: '/family', label: 'family', sf: 'person.3', md: 'group' },
-] as const satisfies readonly {
-  name: string;
-  href: string;
-  label: string;
-  sf: SFSymbol;
-  md: string;
-}[];
+  { name: 'index', href: '/', label: 'home', icon: Icons.home, activeIcon: Icons.homeFill },
+  { name: 'lists', href: '/lists', label: 'lists', icon: Icons.checklist, activeIcon: Icons.checklist },
+  { name: 'calendar', href: '/calendar', label: 'calendar', icon: Icons.calendar, activeIcon: Icons.calendar },
+  { name: 'map', href: '/map', label: 'map', icon: Icons.map, activeIcon: Icons.map },
+  { name: 'family', href: '/family', label: 'family', icon: Icons.family, activeIcon: Icons.family },
+] as const;

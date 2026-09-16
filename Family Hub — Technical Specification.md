@@ -44,8 +44,8 @@ The MVP ships nine features in native iOS and Android apps. Going native moves l
 | Accounts | Email + password, magic link, Google and Apple sign-in, biometric unlock | Passkeys (v3) |
 | Family & invites | One family per user, invite link (opens the app or store) or 6-digit code, roles | Several families per user (v2) |
 | Shopping lists | Multiple lists, categories, quantity, bought/unbought, quick re-add, swipe actions | Store-section ordering (v2), barcode scan, AI suggestions (v3+) |
-| To-dos & chores | Assign to member, due date, done | Recurring chores with rotation (v2) |
-| Calendar | Shared events, recurrence, reminders, member colors | Google/Apple two-way sync, .ics feed (v2) |
+| To-dos & chores | Assign to member, due date, done | Recurring chores with rotation, points and rewards (v2) |
+| Calendar | Shared events, recurrence, reminders, member colors | Google/Apple two-way sync, .ics feed, events from forwarded emails and photos (v2) |
 | Location | Opt-in live location in background, 24 h trail, check-in, "Where are you?" | Geofences and arrive/leave alerts (v2), longer history (v3) |
 | Notifications | Native push (APNs/FCM) for changes, reminders, requests | Digest, per-list settings (v2) |
 | Activity feed | Last 30 days of family changes | Filters, reactions (v3) |
@@ -523,7 +523,9 @@ The MVP takes about 12 weeks for one full-time developer, or 7–8 weeks for two
 
 ## 12. Version 2
 
-Version 2 adds geofences, calendar sync, a web companion and multi-family support. It is estimated at 8–10 weeks after launch, and priorities should follow beta and store feedback.
+Version 2 adds geofences, calendar sync, smart capture, a web companion and multi-family support. It is estimated at 10–12 weeks after launch, and priorities should follow beta and store feedback.
+
+A September 2026 review of competing apps (Cozi, FamilyWall, TimeTree, Life360, AnyList, OurGroceries, OurHome, S'moresUp, Nori, Maple, Skylight) showed two gaps that reviewers treat as table stakes: calendar sync (12.2) and entering events without typing (12.4). Those two come first in v2, followed by chore rewards (12.5); the rest follows feedback.
 
 ### 12.1 Places and geofences
 
@@ -546,14 +548,35 @@ Version 2 adds geofences, calendar sync, a web companion and multi-family suppor
 - Installable as a PWA on desktop; shows the family map but does not share location in the background.
 - Estimated 3–4 weeks thanks to the MVP groundwork, mostly layout work for wide screens (sidebar navigation, week calendar view, keyboard shortcuts).
 
-### 12.4 Other v2 features
+### 12.4 Smart capture
+
+Parents with school-age children enter 40–50 events a month by hand; competitors (Nori, Sense, Skylight Magic Import, Cozi Max) now create them from emails and photos.
+
+- Forward to family: each family gets a private inbound address (for example `<random>@in.familyhub.app`). A `capture-email` Edge Function receives the inbound-email webhook, checks the sender against members' verified emails, and extracts events, tasks and shopping items with an LLM.
+- Photo to events: snap a school flyer, sports schedule or invitation; the image goes to the same extraction function.
+- Voice or free text: "Dentist for Mia Tuesday 3pm" in a single input field.
+- Nothing is saved directly: results land as drafts in a review screen (new `capture_drafts` table), where the member confirms, edits or discards each one. Duplicate detection against existing events.
+- Privacy: originals are deleted after extraction and are never used for training; the LLM provider must offer EU processing or a DPA; capture is off until an Adult turns it on for the family.
+- Metered per family (for example 50 captures a month free) to cap LLM cost; unlimited in the paid plan.
+- Web behavior: full (photo via file input).
+
+### 12.5 Chores with points and rewards
+
+- Recurring chores with weekly rotation between members.
+- Points per chore, set by Adults; Children see their balance and streaks.
+- Rewards defined by Adults ("30 min screen time", "pocket money") and redeemed by Children with Adult approval; the history is kept.
+- Optional pocket-money ledger (amounts only, no real payments) as a first step toward the v3 budget.
+- New tables `chore_rules`, `point_entries`, `rewards`, `reward_redemptions`; RLS so only Adults award points or approve rewards.
+
+### 12.6 Other v2 features
 
 | Feature | Notes |
 | --- | --- |
 | Home screen widgets | iOS WidgetKit and Android Glance widgets (via Expo config plugins): shopping list count, next event, where everyone is |
-| Multiple families per user | Family switcher; RLS already scoped by family\_id, remove the unique user\_id constraint |
-| Recurring chores with rotation | Weekly rotation between members, streaks for kids |
+| Multiple families per user | Family switcher; RLS already scoped by family\_id, remove the unique user\_id constraint. Also covers separate households (co-parents, grandparents) |
 | Shared notes and documents | Rich-text notes, file uploads (Supabase Storage) for passports, insurance, school papers; Adults-only option |
+| Shared contacts and emergency info | Doctors, schools, babysitters, emergency contacts; per-member allergies, blood type, medication; Adults-only option |
+| Event attachments and pinned events | Files and photos on events (tickets, invitations); pin important events to the top of the agenda |
 | SOS button | One tap sends the current position and an urgent push to all Adults |
 | Notification digest | Daily summary instead of single alerts |
 | Self-service data export | JSON and CSV download from settings |
@@ -566,15 +589,17 @@ These features are candidates, ordered by expected value. None of them needs cha
 | Version | Feature | Technical notes |
 | --- | --- | --- |
 | v3 | Family budget and expenses | Expense entries, categories, monthly totals, split between members; new `expenses` table |
-| v3 | Meal planner | Weekly plan with recipes; "add ingredients to shopping list" button |
+| v3 | Meal planner and recipe box | Weekly plan with recipes; import recipes from any website (schema.org Recipe markup) or a photo via smart capture; "add ingredients to shopping list" merges duplicates with existing items |
 | v3 | Photo album | Supabase Storage with image resizing; per-event albums |
 | v3 | Family chat | Realtime channel messages with reactions, or comment threads on items and events |
 | v3 | Apple Watch and Wear OS | Glanceable shopping list and "check in" from the wrist |
 | v3 | Passkeys | Native passkey sign-in through Supabase Auth |
+| v3 | Kitchen display mode | Always-on tablet layout (like Skylight or Hearth wall displays): today's agenda, lists and chores, signed in as a shared family device with limited rights |
+| v3 | Morning briefing | Push or widget each morning: today's events, tasks due, who needs picking up; extends the v2 digest |
 | Later | AI suggestions | "You usually buy eggs weekly" from `item_history`; smart categorization of new items |
 | Later | Voice and barcode input | On-device speech recognition; barcode via expo-camera and an open product database |
-| Later | Siri Shortcuts and Google Assistant | "Add milk to the family list" via App Intents / App Actions |
-| Later | Driving and safety insights | Arrival notifications for trips, speed alerts (opt-in, sensitive) |
+| Later | Siri Shortcuts, Google Assistant and Alexa | "Add milk to the family list" via App Intents / App Actions and an Alexa skill (account linking through Supabase OAuth) |
+| Later | Driving and safety insights | Arrival notifications for trips, speed alerts, crash detection with a "Are you OK?" prompt that alerts Adults if unanswered (opt-in, sensitive) |
 | Later | Monetization (if public) | Free tier for one family; paid plan via in-app purchase (RevenueCat) for longer history, places, storage |
 
 ## 14. Open questions and risks

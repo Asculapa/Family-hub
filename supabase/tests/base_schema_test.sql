@@ -1,13 +1,16 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(7);
+select plan(8);
 
 -- Two users: Alice creates a family, Bob is an outsider.
-insert into auth.users (id, email) values
-  ('00000000-0000-0000-0000-00000000000a', 'alice@example.com'),
-  ('00000000-0000-0000-0000-00000000000b', 'bob@example.com');
+insert into auth.users (id, email, email_confirmed_at) values
+  ('00000000-0000-0000-0000-00000000000a', 'alice@example.com', now()),
+  ('00000000-0000-0000-0000-00000000000b', 'bob@example.com', now());
 
-select is((select count(*)::int from profiles), 2, 'a profile is created for each new user');
+select is((select count(*)::int from profiles where id in ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-00000000000b')), 2,
+  'a profile is created for each new user');
+select is((select count(*)::int from profiles where id in ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-00000000000b') and color ~ '^#[0-9A-F]{6}$'), 2,
+  'new profiles get a member color');
 
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-00000000000a"}';

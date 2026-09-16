@@ -15,11 +15,13 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
-    "db:types": "supabase gen types typescript --local > packages/data/src/database.types.ts"
+    "db:types": "supabase gen types typescript --local > packages/data/src/database.types.ts",
+    "test:functions": "vitest run --root supabase/functions"
   },
   "devDependencies": {
     "supabase": "^2.118.0",
     "turbo": "^2.11.4",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.2"
   }
 }

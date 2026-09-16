@@ -11,26 +11,17 @@ export const listTypeSchema = z.enum(['shopping', 'todo']);
 
 export const inviteCodeSchema = z.string().regex(/^\d{6}$/, 'Code must be 6 digits');
 
+export const emailSchema = z.email();
 export const passwordSchema = z.string().min(8);
 
-export const listItemInputSchema = z.object({
-  id: z.uuid(),
-  listId: z.uuid(),
-  familyId: z.uuid(),
-  title: z.string().trim().min(1).max(200),
-  quantity: z.number().positive().nullable().default(null),
-  unit: z.string().max(20).nullable().default(null),
-  category: z.string().max(50).nullable().default(null),
-  note: z.string().max(1000).nullable().default(null),
-  assigneeId: z.uuid().nullable().default(null),
-  dueAt: z.iso.datetime({ offset: true }).nullable().default(null),
-});
-export type ListItemInput = z.input<typeof listItemInputSchema>;
-export type ListItem = z.output<typeof listItemInputSchema>;
+export const listNameSchema = z.string().trim().min(1).max(60);
+export const itemTitleSchema = z.string().trim().min(1).max(200);
+export const itemNoteSchema = z.string().max(1000);
+export const itemUnitSchema = z.string().trim().max(20);
 
-export const createInviteSchema = z.object({
-  familyId: z.uuid(),
-  role: z.enum(['adult', 'child']),
-  maxUses: z.number().int().min(1).max(INVITE_MAX_USES).default(1),
-});
-export type CreateInviteInput = z.input<typeof createInviteSchema>;
+/** Quantity typed by the user: empty means none; accepts "1,5" as well as "1.5". */
+export const quantityInputSchema = z
+  .string()
+  .trim()
+  .transform((v) => (v === '' ? null : Number(v.replace(',', '.'))))
+  .refine((v) => v === null || (Number.isFinite(v) && v > 0), 'Quantity must be a positive number');

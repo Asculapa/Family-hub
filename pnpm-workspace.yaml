@@ -3,7 +3,8 @@ packages:
   - packages/*
 
 # React Native tooling expects a flat node_modules
-allowBuilds:
-  unrs-resolver: set this to true or false
-
 nodeLinker: hoisted
+
+# Dependency install scripts: true to run, false to skip (pnpm refuses unreviewed ones).
+allowBuilds:
+  unrs-resolver: false
