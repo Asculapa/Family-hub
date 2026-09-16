@@ -1,0 +1,9 @@
+packages:
+  - apps/*
+  - packages/*
+
+# React Native tooling expects a flat node_modules
+allowBuilds:
+  unrs-resolver: set this to true or false
+
+nodeLinker: hoisted

@@ -1,0 +1,27 @@
+{
+  "tabs": {
+    "home": "Home",
+    "lists": "Lists",
+    "calendar": "Calendar",
+    "map": "Map",
+    "family": "Family"
+  },
+  "home": {
+    "title": "Today"
+  },
+  "lists": {
+    "title": "Lists"
+  },
+  "calendar": {
+    "title": "Calendar"
+  },
+  "map": {
+    "title": "Family map"
+  },
+  "family": {
+    "title": "Family"
+  },
+  "common": {
+    "comingSoon": "Coming soon"
+  }
+}
